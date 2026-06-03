@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxim Food App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+    <div id="page-home" class="page active bg-black-full">
+        <div class="app-container-home">
+            <div class="header-home">
+                <div class="logo-home" onclick="goToHome()">MAXIM</div>
+                <div style="display: flex; gap: 15px;">
+                    <button class="ui-btn-home" style="position: relative;" onclick="goToNotifikasi()">
+                        🔔<div class="notif-badge" style="display: none;">0</div>
+                    </button>
+                    <button class="ui-btn-home" style="position: relative;" onclick="goToCart()">
+                        🛒<div class="cart-badge" id="cart-badge-home">0</div>
+                    </button>
+                </div>
+            </div>
+
+            <input type="text" id="search-input-home" placeholder="🔍 Cari makanan atau produk..." onkeypress="handleSearchHome(event)">
+
+            <div class="promo-banner">
+                <h2>PROMO HARI INI</h2>
+                <p>GRATIS ONGKIR SEMUA MENU</p>
+                <button class="promo-btn" onclick="goToPromo()">Lihat Kode Promomu</button>
+            </div>
+
+            <div class="section-heading-home">Rekomendasi untukmu</div>
+
+            <div class="grid-container" id="recommendation-wrapper">
+                </div>
+        </div>
+    </div>
+
+    <div id="page-search" class="page bg-black-full">
+        <div class="header-search">
+            <a href="#" onclick="goToHome()" style="text-decoration: none; color: #fff; font-size: 20px; font-weight: bold;">← 🔍 CARI MAKANAN</a>
+            <div style="display: flex; gap: 10px;">
+                <button class="ui-btn-search" style="position: relative;" onclick="goToNotifikasi()">
+                    🔔<div class="notif-badge" style="display: none;">0</div>
+                </button>
+                <button class="ui-btn-search" style="position: relative;" onclick="goToCart()">
+                    🛒<div class="cart-badge" id="cart-badge-search">0</div>
+                </button>
+            </div>
+        </div>
+
+        <div class="search-bar-inner">
+            <input type="text" id="search-input" placeholder="🔍 Cari makanan atau resto..." oninput="filterProduk()">
+        </div>
+
+        <div class="filter-container">
+            <div class="chip" id="btn-terdekat" onclick="toggleFilter('terdekat')">Terdekat</div>
+            <div class="chip" id="btn-rating-tinggi" onclick="toggleFilter('rating-tinggi')">Rating Tinggi</div>
+            <div class="chip" id="btn-rating-rendah" onclick="toggleFilter('rating-rendah')">Rating Rendah</div>
+            <div class="chip" id="btn-harga-tinggi" onclick="toggleFilter('harga-tinggi')">Harga Tinggi</div>
+            <div class="chip" id="btn-harga-rendah" onclick="toggleFilter('harga-rendah')">Harga Rendah</div>
+        </div>
+
+        <p id="no-result" style="display:none; text-align:center; color:#888; margin-top:20px;">Maaf, makanan atau resto yang Anda cari tidak ditemukan.</p>
+
+        <div id="results-wrapper">
+            </div>
+    </div>
+
+    <div id="page-promo" class="page bg-black-full">
+        <div style="padding: 20px;">
+            <div class="header-search" style="border-bottom: 1px solid #333; margin-bottom: 25px;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span class="back-btn" onclick="goToHome()" style="margin-top: 0; font-size: 24px;">←</span>
+                    <h1 style="color: #fff; font-size: 20px; margin: 0;">KODE PROMO</h1>
+                </div>
+            </div>
+
+            <div class="promo-card-item">
+                <span class="promo-label">🏷️ KODE PROMO</span>
+                <div class="promo-code-box">MAXIM20</div>
+                <div class="status berlaku">MASIH BERLAKU</div>
+            </div>
+
+            <div class="promo-card-item">
+                <span class="promo-label">🏷️ KODE PROMO</span>
+                <div class="promo-code-box">MAXIM30</div>
+                <div class="status digunakan">SUDAH DIGUNAKAN</div>
+            </div>
+
+            <div class="promo-card-item">
+                <span class="promo-label">🏷️ KODE PROMO</span>
+                <div class="promo-code-box">MAXIM10</div>
+                <div class="status kadaluarsa">KODE KADALUARSA</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-notifikasi" class="page bg-black-full">
+        <div class="header-black" style="padding-bottom: 30px;">
+            <div class="top-bar-header" style="align-items: center;">
+                <span class="back-btn" onclick="goBackFromNotif()" style="margin: 0;">←</span>
+                <div class="page-title" style="margin-left: 10px;">NOTIFIKASI</div>
+            </div>
+        </div>
+        <div class="bg-white-rounded" style="padding: 20px; min-height: 85vh;">
+            <div class="notif-container" id="notif-list-container">
+                </div>
+        </div>
+    </div>
+
+    <div id="detail-page" class="page">
+        <div class="hero-banner">
+            <div class="circle-back-btn" onclick="goToHome()">←</div>
+            <img id="detail-bg" src="" alt="Banner">
+        </div>
+        <div class="detail-resto-card">
+            <img id="detail-resto-img" class="resto-img" src="" alt="Resto">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+                <h3 id="detail-resto-name" style="color: #FFFF00; font-size: 15px; margin: 0;">Nama Resto</h3>
+                <p id="detail-resto-dist" style="color: #FFFF00; font-size: 11px; margin: 0;">0 km</p>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 12px;">⭐</span>
+                    <span id="detail-resto-rating" style="font-size: 13px; font-weight: bold; color: #fff;">0.0</span>
+                </div>
+                <p id="detail-resto-sold" style="color: #aaa; font-size: 10px; margin: 0;">0 terjual</p>
+            </div>
+        </div>
+        <div class="detail-menu-section">
+            <div class="food-card-ver">
+                <img id="detail-food-img" class="food-img-ver" src="" alt="Makanan">
+                <div class="food-info-ver">
+                    <h4 id="detail-food-name">Nama Makanan</h4>
+                    <div class="price" id="detail-food-price">Rp.0</div>
+                    <div class="qty-controls">
+                        <button class="btn-qty btn-minus" onclick="changeQty(-1)">−</button>
+                        <span class="qty-num" id="qty-display">0</span>
+                        <button class="btn-qty btn-plus" onclick="changeQty(1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="checkout-wrapper" id="checkout-bar">
+            <button class="checkout-btn" id="checkout-btn-text" onclick="goToCheckout()">Beli Sekarang - Rp0</button>
+        </div>
+    </div>
+
+    <div id="cart-page" class="page">
+        <div class="header-section">
+            <div class="top-bar"><h2><span class="back-btn" onclick="goToHome()">←</span> KERANJANG</h2></div>
+        </div>
+        <div class="cart-list" id="cart-list-container"></div>
+    </div>
+
+    <div id="checkout-page" class="page bg-black-full">
+        <div style="padding: 20px 20px 25px 20px;">
+            <div style="display: flex; align-items: center; margin-bottom: 25px;">
+                <span class="back-btn" onclick="goToHome()">←</span>
+                <h2 style="font-size: 20px; font-weight: bold; color: white; margin:0; margin-left: 15px;">PESANAN ANDA</h2>
+            </div>
+            
+            <div class="address-box-co" onclick="goToLokasi()">
+                <span style="color: #ff5252; font-size: 15px;">📍</span>
+                <span id="checkout-address-text" style="color: #ccc; font-size: 13px;">Antar ke Jl. Sudirman No.5</span>
+            </div>
+        </div>
+        
+        <div style="background: white; padding: 20px 20px 30px 20px; width: 100%;">
+            <div class="co-item-list" id="checkout-items"></div>
+        </div>
+        
+        <div class="co-black-box">
+            <div>
+                <div class="co-section-header">DETAIL PEMBAYARAN <span>LIHAT SEMUA</span></div>
+                <div style="margin-top: 15px;">
+                    <div class="payment-method" onclick="selectPayment('kaspro')">
+                        <div class="payment-left"><div class="pay-icon" style="color: #4CAF50;">$</div> MAXIM Wallet-Kaspro</div>
+                        <div class="radio-circle" id="radio-kaspro"></div>
+                    </div>
+                    <div class="payment-method" onclick="selectPayment('tunai')">
+                        <div class="payment-left"><div class="pay-icon" style="color: #81C784;">💵</div> Tunai</div>
+                        <div class="radio-circle selected" id="radio-tunai"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="promo-header">% KODE PROMO</div>
+                <div class="promo-input-row">
+                    <input type="text" class="promo-input" id="promo-code-input" placeholder="MAXIM20">
+                    <button class="promo-btn-checkout" onclick="applyPromo()">AKTIFKAN</button>
+                </div>
+                <div class="promo-success" id="promo-success-msg">✔️ Promo berhasil! Hemat Rp.12.000</div>
+            </div>
+            <div>
+                <div class="summary-title">Ringkasan Pesanan</div>
+                <div class="summary-row"><span id="co-qty-text">Subtotal</span><span id="co-subtotal">Rp. 0</span></div>
+                <div class="summary-row"><span>Ongkos kirim</span><span id="co-ongkir">Rp. 8.000</span></div>
+                <div class="summary-row discount" id="summary-discount"><span>Diskon Promo</span><span style="color: #fff;">-Rp. 12.000</span></div>
+                <div class="total-row"><span>TOTAL BAYAR</span><span id="co-total-bayar">Rp. 0</span></div>
+            </div>
+            <button class="btn-lanjut-bayar" onclick="goToTracking()">LANJUT KE PEMBAYARAN →</button>
+        </div>
+    </div>
+
+    <div id="page-lokasi" class="page bg-black-full">
+        <div style="padding: 20px;">
+            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                <span class="back-btn" onclick="goToCheckout()">←</span>
+                <h2 style="font-size: 20px; font-weight: bold; color: white; margin:0; margin-left: 15px;">PILIH LOKASI</h2>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                <button style="background: white; color: black; border: none; padding: 10px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <span style="color: #4CAF50; font-size: 16px;">🗺️</span> Pilih Lewat Peta
+                </button>
+            </div>
+
+            <div class="search-lokasi-box">
+                <div class="yellow-dot"></div>
+                <input type="text" placeholder="Cari Lokasi..." id="input-cari-lokasi" onkeypress="searchLokasiInput(event)">
+                <span style="color: #aaa; cursor: pointer;">🔍</span>
+            </div>
+        </div>
+
+        <div class="bg-white-rounded" style="padding: 0; min-height: 80vh;">
+            <div class="lokasi-history-container">
+                <div class="lokasi-item" onclick="pilihLokasi('JL. Palmerah timur No.3 RT 3')">
+                    <div class="lokasi-icon">📍</div>
+                    <div class="lokasi-text">
+                        <h4>Lokasimu saat ini</h4>
+                        <p>JL. Palmerah timur No.3 RT 3</p>
+                    </div>
+                </div>
+                <div class="lokasi-item" onclick="pilihLokasi('Binus University, Lobby basement')">
+                    <div class="lokasi-icon">🕒</div>
+                    <div class="lokasi-text">
+                        <h4>Binus University</h4>
+                        <p>Lobby basement</p>
+                    </div>
+                </div>
+                <div class="lokasi-item" onclick="pilihLokasi('kost binus jaya, JL. Palmerah barat No.3')">
+                    <div class="lokasi-icon">🕒</div>
+                    <div class="lokasi-text">
+                        <h4>kost binus jaya</h4>
+                        <p>JL. Palmerah barat No.3</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tracking-page" class="page bg-black-full">
+        <div class="tracking-header">
+            <span class="back-btn" onclick="goToHome()" style="margin-right: 15px;">←</span> PESANAN ANDA
+            <button class="ui-btn-home" style="margin-left: auto; width: 35px; height: 35px;" onclick="goToNotifikasi()">
+                🔔<div class="notif-badge" style="display: none;">0</div>
+            </button>
+        </div>
+        <div class="tracking-content bg-white-rounded" style="padding: 20px;">
+            <div class="estimasi-title" id="tracking-title-text">Tepat waktu</div>
+            <div class="estimasi-time">12.00 - 12.05</div>
+            
+            <div id="tracking-state-1">
+                <div class="progress-box">
+                    <div class="prog-step active" id="prog-step-1">Ⓜ️</div>
+                    <div class="prog-line active" id="prog-line-1"></div>
+                    <div class="prog-step" id="prog-step-2">🍲</div>
+                    <div class="prog-line" id="prog-line-2"></div>
+                    <div class="prog-step" id="prog-step-3">🛵</div>
+                    <div class="prog-line" id="prog-line-3"></div>
+                    <div class="prog-step" id="prog-step-4">🏠</div>
+                </div>
+            </div>
+
+            <div id="tracking-state-2" style="display: none; margin-bottom: 20px;">
+                <img src="image 1.png" style="width: 100%; border-radius: 12px; object-fit: cover; display: block; border: 1px solid #eaeaea;" alt="Peta Lokasi">
+            </div>
+
+            <div class="tracking-status-text" id="tracking-status-text">Driver menuju lokasi mu</div>
+            
+            <div class="driver-card" id="driver-card" style="display: none;">
+                <div class="driver-info-top">
+                    <div class="driver-details-left">
+                        <div class="driver-avatar">👤</div>
+                        <div class="driver-name-container">
+                            <div class="driver-name-white">Panglima Perang</div>
+                            <div class="driver-rating-white">4.99 <span class="star">⭐</span></div>
+                        </div>
+                    </div>
+                    <button class="btn-call-dark">📞</button>
+                </div>
+                <button class="btn-chat-dark">💬 Chat with your driver</button>
+            </div>
+
+            <div id="tracking-food-item" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <div id="page-rating-driver" class="page bg-black-full">
+        <div class="header-black">
+            <div class="top-bar-header">
+                <div class="page-title">RANGKUMAN<br>TRANSAKSI</div>
+            </div>
+        </div>
+        <div class="content-padding bg-white-rounded">
+            <div class="section-title">Pesanan Selesai</div>
+            
+            <div class="driver-card-dark">
+                <div class="driver-info-top">
+                    <div class="driver-details-left">
+                        <div class="driver-avatar">👤</div>
+                        <div class="driver-name-container">
+                            <div class="driver-name-white">Panglima Perang</div>
+                            <div class="driver-rating-white">4.99 <span class="star">⭐</span></div>
+                        </div>
+                    </div>
+                    <button class="btn-call-dark">📞</button>
+                </div>
+                <button class="btn-chat-dark">💬 Chat with your driver</button>
+            </div>
+
+            <div class="rating-wrapper">
+                <div class="rating-title">Kasih rating ke driver</div>
+                <div class="rating-box" id="stars-driver">
+                    <span onclick="rateDriver(1)">★</span>
+                    <span onclick="rateDriver(2)">★</span>
+                    <span onclick="rateDriver(3)">★</span>
+                    <span onclick="rateDriver(4)">★</span>
+                    <span onclick="rateDriver(5)">★</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-tip-driver" class="page bg-black-full">
+        <div class="header-black">
+            <div class="top-bar-header">
+                <span class="back-btn" onclick="skipTip()">←</span>
+                <div class="page-title">RANGKUMAN<br>TRANSAKSI</div>
+            </div>
+        </div>
+        <div class="content-padding bg-white-rounded">
+            <div class="section-title">Terima Kasih</div>
+            
+            <div class="driver-card-dark">
+                <div class="driver-info-top">
+                    <div class="driver-details-left">
+                        <div class="driver-avatar">👤</div>
+                        <div class="driver-name-container">
+                            <div class="driver-name-white">Panglima Perang</div>
+                            <div class="driver-rating-white">4.99 <span class="star">⭐</span></div>
+                        </div>
+                    </div>
+                    <button class="btn-call-dark">📞</button>
+                </div>
+                <button class="btn-chat-dark">💬 Chat with your driver</button>
+            </div>
+
+            <div class="rating-wrapper">
+                <div class="rating-title">Kasih tip ke driver, yuk</div>
+                <div class="tip-grid" id="tip-options">
+                    <div class="tip-btn" onclick="selectTip(this)">Rp 2.000</div>
+                    <div class="tip-btn" onclick="selectTip(this)">Rp 4.000</div>
+                    <div class="tip-btn" onclick="selectTip(this)">Rp 8.000</div>
+                    <div class="tip-btn" onclick="selectTip(this)">Rp 10.000</div>
+                    <div class="tip-btn" onclick="selectTip(this)">Rp 15.000</div>
+                    <div class="tip-btn" onclick="selectTip(this)">Rp 20.000</div>
+                </div>
+                <button class="btn-submit-tip" onclick="submitTip()">Kirim ke driver</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-rating-resto" class="page bg-black-full">
+        <div class="header-black">
+            <div class="top-bar-header">
+                <span class="back-btn" onclick="goBackToTip()">←</span>
+                <div class="page-title">RANGKUMAN<br>TRANSAKSI</div>
+            </div>
+        </div>
+        <div class="content-padding bg-white-rounded">
+            <div class="section-title">Terima Kasih</div>
+            
+            <div class="rating-wrapper" style="margin-top: 30px;">
+                <div class="rating-title">Kasih rating ke resto</div>
+                
+                <div class="card-dark-resto" id="rating-resto-card">
+                    </div>
+
+                <div class="rating-box" id="stars-resto">
+                    <span onclick="rateResto(1)">★</span>
+                    <span onclick="rateResto(2)">★</span>
+                    <span onclick="rateResto(3)">★</span>
+                    <span onclick="rateResto(4)">★</span>
+                    <span onclick="rateResto(5)">★</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
